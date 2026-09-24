@@ -3,11 +3,11 @@ import SwiftUI
 
 struct ContentView: View
 {
-    var nearestSensor: SensorNode?
+    var connectedSensors: [String]
     {
-        LocalizationEngine.findNearestSensor(
-            to: sampleUserLocation,
-            sensors: sampleSensors
+        SensorNetwork.connectedSensors(
+            to: "B",
+            connections: sampleSensorConnections
         )
     }
 
@@ -18,27 +18,17 @@ struct ContentView: View
     {
         VStack(spacing: 20)
         {
-            Text("ExitIQ Localization Test")
+            Text("ExitIQ Sensor Network Test")
                 .font(.title)
                 .fontWeight(.bold)
 
 
-            Text("User Position: (8.0, 10.0)")
+            Text("Sensor B")
 
 
-            if let sensor = nearestSensor
-            {
-                Text("Nearest Sensor: \(sensor.id)")
-                    .font(.title2)
-                    .fontWeight(.semibold)
-
-
-                Text(sensor.name)
-            }
-            else
-            {
-                Text("No Sensor Found")
-            }
+            Text("Connected Sensors: \(connectedSensors.joined(separator: ", "))")
+                .font(.title2)
+                .fontWeight(.semibold)
         }
         .padding()
     }

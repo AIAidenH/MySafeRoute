@@ -59,3 +59,23 @@ var sampleUserLocation = UserLocation(
     y: 10.0,
     nearestSensorID: nil
 )
+
+
+
+
+// sensor network
+let sampleSensorConnections = [
+    SensorConnection(
+        id: "A-B",
+        fromSensorID: "A",
+        toSensorID: "B",
+        distance: 8.0
+    ),
+
+    SensorConnection(
+        id: "B-C",
+        fromSensorID: "B",
+        toSensorID: "C",
+        distance: 8.0
+    )
+]
