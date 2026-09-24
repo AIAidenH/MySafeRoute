@@ -6,7 +6,22 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8B54D4AC30495DA700706B68 /* SensorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4AB30495DA700706B68 /* SensorNode.swift */; };
+		8B54D4AE304964C100706B68 /* SimulationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4AD304964C100706B68 /* SimulationData.swift */; };
+		8B54D4B03049657500706B68 /* BuildingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4AF3049657500706B68 /* BuildingNode.swift */; };
+		8B54D4B2304965E000706B68 /* BuildingEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4B1304965E000706B68 /* BuildingEdge.swift */; };
+		8B54D4B43049666700706B68 /* BuildingMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4B33049666700706B68 /* BuildingMap.swift */; };
+		8B54D4B6304966C800706B68 /* RiskModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4B5304966C800706B68 /* RiskModel.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		8B54D4AB30495DA700706B68 /* SensorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorNode.swift; sourceTree = "<group>"; };
+		8B54D4AD304964C100706B68 /* SimulationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationData.swift; sourceTree = "<group>"; };
+		8B54D4AF3049657500706B68 /* BuildingNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingNode.swift; sourceTree = "<group>"; };
+		8B54D4B1304965E000706B68 /* BuildingEdge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingEdge.swift; sourceTree = "<group>"; };
+		8B54D4B33049666700706B68 /* BuildingMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingMap.swift; sourceTree = "<group>"; };
+		8B54D4B5304966C800706B68 /* RiskModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskModel.swift; sourceTree = "<group>"; };
 		8BA558AF3049552100D6E113 /* ExitIQ.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ExitIQ.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +47,12 @@
 		8BA558A63049552100D6E113 = {
 			isa = PBXGroup;
 			children = (
+				8B54D4AB30495DA700706B68 /* SensorNode.swift */,
+				8B54D4AD304964C100706B68 /* SimulationData.swift */,
+				8B54D4AF3049657500706B68 /* BuildingNode.swift */,
+				8B54D4B1304965E000706B68 /* BuildingEdge.swift */,
+				8B54D4B33049666700706B68 /* BuildingMap.swift */,
+				8B54D4B5304966C800706B68 /* RiskModel.swift */,
 				8BA558B13049552100D6E113 /* ExitIQ */,
 				8BA558B03049552100D6E113 /* Products */,
 			);
@@ -119,6 +140,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B54D4B2304965E000706B68 /* BuildingEdge.swift in Sources */,
+				8B54D4B43049666700706B68 /* BuildingMap.swift in Sources */,
+				8B54D4B03049657500706B68 /* BuildingNode.swift in Sources */,
+				8B54D4B6304966C800706B68 /* RiskModel.swift in Sources */,
+				8B54D4AC30495DA700706B68 /* SensorNode.swift in Sources */,
+				8B54D4AE304964C100706B68 /* SimulationData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

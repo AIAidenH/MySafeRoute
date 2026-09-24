@@ -1,3 +1,61 @@
-//
-
 import Foundation
+
+
+// sample sensor data used for the ExitIQ simulation
+let sensorA = SensorNode(
+    id: "A",
+    name: "East Hallway A",
+    floor: 2,
+    x: 6.0,
+    y: 10.0,
+    temperature: 22.0,
+    smokeLevel: 0.02,
+    fireLevel: 0.0,
+    crowdLevel: 0.20,
+    lastUpdated: Date()
+)
+
+
+let sensorB = SensorNode(
+    id: "B",
+    name: "East Hallway B",
+    floor: 2,
+    x: 14.0,
+    y: 10.0,
+    temperature: 34.0,
+    smokeLevel: 0.18,
+    fireLevel: 0.05,
+    crowdLevel: 0.25,
+    lastUpdated: Date()
+)
+
+
+let sensorC = SensorNode(
+    id: "C",
+    name: "East Hallway C",
+    floor: 2,
+    x: 22.0,
+    y: 10.0,
+    temperature: 57.0,
+    smokeLevel: 0.61,
+    fireLevel: 0.40,
+    crowdLevel: 0.30,
+    lastUpdated: Date()
+)
+
+
+// sensors used in simulation
+let sampleSensors = [
+    sensorA,
+    sensorB,
+    sensorC
+]
+
+
+// sample user location
+var sampleUserLocation = UserLocation(
+    floor: 2,
+    x: 8.0,
+    y: 10.0,
+    nearestSensorID: nil
+)
