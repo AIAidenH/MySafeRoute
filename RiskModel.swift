@@ -2,7 +2,8 @@ import Foundation
 
 
 // calculates a combined risk score for a building path
-struct RiskModel {
+struct RiskModel
+{
 
     
     // risk weights can be adjusted later as the simulation becomes more realistic
@@ -14,7 +15,8 @@ struct RiskModel {
     
 
     // returns a risk score between 0.0 and 1.0
-    static func calculateRisk(for edge: BuildingEdge) -> Double {
+    static func calculateRisk(for edge: BuildingEdge) -> Double
+    {
 
         
         let score =
@@ -27,4 +29,34 @@ struct RiskModel {
 
         return min(max(score, 0.0), 1.0)
     }
+    
+    
+    
+    
+    // risk with future hazard
+    static func calculatePredictiveRisk(
+        for edge: BuildingEdge,
+        userArrivalTime: Double,
+        hazardArrivalTime: Double
+    ) -> Double
+    {
+        let currentRisk = calculateRisk(for: edge)
+
+
+        let futureRisk = PredictiveRisk.calculateArrivalRisk(
+            userArrivalTime: userArrivalTime,
+            hazardArrivalTime: hazardArrivalTime
+        )
+
+
+        let combinedRisk =
+            (currentRisk * 0.6) +
+            (futureRisk * 0.4)
+
+
+        return min(max(combinedRisk, 0.0), 1.0)
+    }
 }
+
+
+

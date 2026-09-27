@@ -63,6 +63,15 @@ let sampleBuilding = BuildingMap(
             type: .exit,
             sensor: nil
         ),
+        
+        
+        BuildingNode(
+            id: "exitB",
+            name: "Exit B",
+            floor: 2,
+            type: .exit,
+            sensor: nil
+        ),
 
         
         BuildingNode(
@@ -151,6 +160,19 @@ let sampleBuilding = BuildingMap(
             fireRisk: 0.0,
             crowdRisk: 0.05,
             structuralRisk: 0.0
+        ),
+        
+        
+        BuildingEdge(
+            id: "edge7",
+            fromNodeID: "hallwayA",
+            toNodeID: "exitB",
+            distance: 18.0,
+            smokeRisk: 0.10,
+            heatRisk: 0.10,
+            fireRisk: 0.05,
+            crowdRisk: 0.15,
+            structuralRisk: 0.05
         )
     ]
 )

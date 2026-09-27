@@ -79,3 +79,26 @@ let sampleSensorConnections = [
         distance: 8.0
     )
 ]
+
+
+
+
+// hazard detection data
+let sensorAReading = SensorReading(
+    id: "A-1",
+    sensorID: "A",
+    time: 10.0,
+    temperature: 45.0,
+    smokeLevel: 0.40,
+    fireLevel: 0.20
+)
+
+
+let sensorBReading = SensorReading(
+    id: "B-1",
+    sensorID: "B",
+    time: 30.0,
+    temperature: 50.0,
+    smokeLevel: 0.55,
+    fireLevel: 0.30
+)

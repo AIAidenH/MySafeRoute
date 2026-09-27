@@ -3,11 +3,22 @@ import SwiftUI
 
 struct ContentView: View
 {
-    var connectedSensors: [String]
+    var routeOptions: [RouteOption]
     {
-        SensorNetwork.connectedSensors(
-            to: "B",
-            connections: sampleSensorConnections
+        RouteEngine.evaluateExits(
+            from: "classroom201",
+            building: sampleBuilding
+        )
+    }
+
+
+
+
+    var selectedRoute: RouteOption?
+    {
+        RouteEngine.findSafestExit(
+            from: "classroom201",
+            building: sampleBuilding
         )
     }
 
@@ -16,19 +27,62 @@ struct ContentView: View
 
     var body: some View
     {
-        VStack(spacing: 20)
+        VStack(alignment: .leading, spacing: 24)
         {
-            Text("ExitIQ Sensor Network Test")
+            Text("ExitIQ Route Selection")
                 .font(.title)
                 .fontWeight(.bold)
 
 
-            Text("Sensor B")
+            ForEach(
+                Array(routeOptions.enumerated()),
+                id: \.offset
+            )
+            {
+                index, option in
 
 
-            Text("Connected Sensors: \(connectedSensors.joined(separator: ", "))")
-                .font(.title2)
-                .fontWeight(.semibold)
+                VStack(alignment: .leading, spacing: 6)
+                {
+                    Text(option.exitNodeID)
+                        .font(.headline)
+
+
+                    Text("Distance: \(option.distance, specifier: "%.1f") m")
+
+
+                    Text("Risk: \(option.risk, specifier: "%.2f")")
+                }
+            }
+
+
+            Divider()
+
+
+            if let selectedRoute
+            {
+                Text("Selected Exit")
+                    .font(.headline)
+
+
+                Text(selectedRoute.exitNodeID)
+                    .font(.title)
+                    .fontWeight(.bold)
+
+
+                Text("Distance: \(selectedRoute.distance, specifier: "%.1f") m")
+
+
+                Text("Risk: \(selectedRoute.risk, specifier: "%.2f")")
+
+
+                Text(selectedRoute.route.joined(separator: " → "))
+                    .font(.caption)
+            }
+            else
+            {
+                Text("No exit route available")
+            }
         }
         .padding()
     }
