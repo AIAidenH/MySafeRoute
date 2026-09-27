@@ -64,10 +64,13 @@ struct RouteEngine
     
     
     // total route distance
-    static func calculateDistance(
+    static func calculateDistance
+    (
         for route: [String],
         building: BuildingMap
     ) -> Double
+    
+    
     {
         if route.count < 2
         {
@@ -104,10 +107,13 @@ struct RouteEngine
 
 
     // average route risk
-    static func calculateRisk(
+    static func calculateRisk
+    (
         for route: [String],
         building: BuildingMap
     ) -> Double
+    
+    
     {
         if route.count < 2
         {
@@ -152,10 +158,13 @@ struct RouteEngine
     
 
     // evaluate all exits
-    static func evaluateExits(
+    static func evaluateExits
+    (
         from startNodeID: String,
         building: BuildingMap
     ) -> [RouteOption]
+    
+    
     {
         let exitNodes = building.nodes.filter
         {
@@ -210,10 +219,13 @@ struct RouteEngine
     
     
     // choose best exit
-    static func findSafestExit(
+    static func findSafestExit
+    (
         from startNodeID: String,
         building: BuildingMap
     ) -> RouteOption?
+    
+    
     {
         let routeOptions = evaluateExits(
             from: startNodeID,
@@ -248,6 +260,60 @@ struct RouteEngine
 
             return firstOption.risk < secondOption.risk
         }
+    }
+    
+    
+    
+    
+    // arrival time at each node
+    static func calculateArrivalTimes
+    (
+        for route: [String],
+        building: BuildingMap
+    ) -> [String: Double]
+    
+    
+    {
+        guard !route.isEmpty
+        else
+        {
+            return [:]
+        }
+
+
+        var arrivalTimes: [String: Double] = [
+            route[0]: 0.0
+        ]
+
+
+        var totalDistance = 0.0
+
+
+        for index in 0..<(route.count - 1)
+        {
+            let fromNodeID = route[index]
+            let toNodeID = route[index + 1]
+
+
+            if let edge = building.edges.first(where:
+            {
+                ($0.fromNodeID == fromNodeID &&
+                 $0.toNodeID == toNodeID) ||
+                ($0.fromNodeID == toNodeID &&
+                 $0.toNodeID == fromNodeID)
+            })
+            {
+                totalDistance += edge.distance
+
+
+                arrivalTimes[toNodeID] = TravelTime.calculate(
+                    distance: totalDistance
+                )
+            }
+        }
+
+
+        return arrivalTimes
     }
     
     

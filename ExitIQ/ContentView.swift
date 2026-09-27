@@ -3,10 +3,22 @@ import SwiftUI
 
 struct ContentView: View
 {
-    var routeOptions: [RouteOption]
+    var route: [String]
     {
-        RouteEngine.evaluateExits(
+        RouteEngine.findRoute(
             from: "classroom201",
+            to: "exitA",
+            building: sampleBuilding
+        ) ?? []
+    }
+
+
+
+
+    var arrivalTimes: [String: Double]
+    {
+        RouteEngine.calculateArrivalTimes(
+            for: route,
             building: sampleBuilding
         )
     }
@@ -14,11 +26,43 @@ struct ContentView: View
 
 
 
-    var selectedRoute: RouteOption?
+    var hazardSpeed: Double
     {
-        RouteEngine.findSafestExit(
-            from: "classroom201",
-            building: sampleBuilding
+        HazardPrediction.calculateSpeed(
+            distance: 8.0,
+            firstTime: sensorAReading.time,
+            secondTime: sensorBReading.time
+        ) ?? 0.0
+    }
+
+
+
+
+    var hazardArrivalTime: Double
+    {
+        HazardPrediction.calculateArrivalTime(
+            currentTime: sensorBReading.time,
+            distance: 8.0,
+            speed: hazardSpeed
+        ) ?? 0.0
+    }
+
+
+
+
+    var userArrivalTime: Double
+    {
+        arrivalTimes["hallwayC"] ?? 0.0
+    }
+
+
+
+
+    var predictiveRisk: Double
+    {
+        PredictiveRisk.calculateArrivalRisk(
+            userArrivalTime: userArrivalTime,
+            hazardArrivalTime: hazardArrivalTime
         )
     }
 
@@ -27,62 +71,32 @@ struct ContentView: View
 
     var body: some View
     {
-        VStack(alignment: .leading, spacing: 24)
+        VStack(alignment: .leading, spacing: 20)
         {
-            Text("ExitIQ Route Selection")
+            Text("ExitIQ Prediction Test")
                 .font(.title)
                 .fontWeight(.bold)
 
 
-            ForEach(
-                Array(routeOptions.enumerated()),
-                id: \.offset
+            Text("Hallway C")
+                .font(.title2)
+                .fontWeight(.bold)
+
+
+            Text(
+                "User Arrival: \(userArrivalTime, specifier: "%.1f") sec"
             )
-            {
-                index, option in
 
 
-                VStack(alignment: .leading, spacing: 6)
-                {
-                    Text(option.exitNodeID)
-                        .font(.headline)
+            Text(
+                "Hazard Arrival: \(hazardArrivalTime, specifier: "%.1f") sec"
+            )
 
 
-                    Text("Distance: \(option.distance, specifier: "%.1f") m")
-
-
-                    Text("Risk: \(option.risk, specifier: "%.2f")")
-                }
-            }
-
-
-            Divider()
-
-
-            if let selectedRoute
-            {
-                Text("Selected Exit")
-                    .font(.headline)
-
-
-                Text(selectedRoute.exitNodeID)
-                    .font(.title)
-                    .fontWeight(.bold)
-
-
-                Text("Distance: \(selectedRoute.distance, specifier: "%.1f") m")
-
-
-                Text("Risk: \(selectedRoute.risk, specifier: "%.2f")")
-
-
-                Text(selectedRoute.route.joined(separator: " → "))
-                    .font(.caption)
-            }
-            else
-            {
-                Text("No exit route available")
-            }
+            Text(
+                "Predicted Risk: \(predictiveRisk, specifier: "%.2f")"
+            )
+            .fontWeight(.semibold)
         }
         .padding()
     }

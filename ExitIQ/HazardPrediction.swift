@@ -5,11 +5,14 @@ import Foundation
 struct HazardPrediction
 {
     // calculate hazard speed
-    static func calculateSpeed(
+    static func calculateSpeed
+    (
         distance: Double,
         firstTime: Double,
         secondTime: Double
     ) -> Double?
+    
+    
     {
         let timeDifference = secondTime - firstTime
 
@@ -33,5 +36,27 @@ struct HazardPrediction
     ) -> String
     {
         return "\(firstSensorID) → \(secondSensorID)"
+    }
+    
+    
+    
+    
+    // predicted hazard arrival time
+    static func calculateArrivalTime(
+        currentTime: Double,
+        distance: Double,
+        speed: Double
+    ) -> Double?
+    {
+        if speed <= 0
+        {
+            return nil
+        }
+
+
+        let travelTime = distance / speed
+
+
+        return currentTime + travelTime
     }
 }
