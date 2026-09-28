@@ -3,13 +3,22 @@ import SwiftUI
 
 struct ContentView: View
 {
-    // simulated measured speed
-    let measuredUserSpeed: Double = 1.2
+    let measuredUserSpeed = 1.2
 
 
-    // predicted hazard arrival times
-    // predicted hazard arrival times
-    let hazardArrivalTimes: [String: Double] = [
+    // hazard before sensor update
+    let initialHazardTimes: [String: Double] = [
+        "hallwayA": 60.0,
+        "hallwayB": 60.0,
+        "hallwayC": 60.0,
+        "stairA": 60.0,
+        "exitA": 60.0,
+        "exitB": 60.0
+    ]
+
+
+    // hazard after sensor update
+    let updatedHazardTimes: [String: Double] = [
         "hallwayA": 60.0,
         "hallwayB": 60.0,
         "hallwayC": 60.0,
@@ -21,26 +30,37 @@ struct ContentView: View
 
 
 
-    var initialRoute: RouteOption?
+    var currentRoute: RouteOption?
     {
-        RouteEngine.findBestExit(
+        DynamicRoutingEngine.recalculateRoute(
             from: "classroom201",
             building: sampleBuilding,
-            userSpeed: nil,
-            hazardArrivalTimes: hazardArrivalTimes
+            userSpeed: measuredUserSpeed,
+            hazardArrivalTimes: initialHazardTimes
         )
     }
 
 
 
 
-    var predictiveRoute: RouteOption?
+    var updatedRoute: RouteOption?
     {
-        RouteEngine.findBestExit(
+        DynamicRoutingEngine.recalculateRoute(
             from: "classroom201",
             building: sampleBuilding,
             userSpeed: measuredUserSpeed,
-            hazardArrivalTimes: hazardArrivalTimes
+            hazardArrivalTimes: updatedHazardTimes
+        )
+    }
+
+
+
+
+    var shouldReroute: Bool
+    {
+        DynamicRoutingEngine.shouldReroute(
+            currentRoute: currentRoute,
+            newRoute: updatedRoute
         )
     }
 
@@ -51,57 +71,42 @@ struct ContentView: View
     {
         VStack(alignment: .leading, spacing: 24)
         {
-            Text("ExitIQ Dynamic Routing Test")
+            Text("ExitIQ Dynamic Rerouting Test")
                 .font(.title)
                 .fontWeight(.bold)
 
 
-            VStack(alignment: .leading, spacing: 8)
-            {
-                Text("Initial Routing")
-                    .font(.headline)
+            Text("Before Sensor Update")
+                .font(.headline)
 
 
-                if let initialRoute
-                {
-                    Text(initialRoute.exitNodeID)
-                        .font(.title2)
-                        .fontWeight(.bold)
-
-
-                    Text(
-                        "Risk: \(initialRoute.risk, specifier: "%.2f")"
-                    )
-
-
-                    Text(
-                        "Distance: \(initialRoute.distance, specifier: "%.1f") m"
-                    )
-                }
-            }
+            Text(currentRoute?.exitNodeID ?? "No Route")
+                .font(.title2)
+                .fontWeight(.bold)
 
 
             Divider()
 
 
-            VStack(alignment: .leading, spacing: 8)
-            {
-                Text("After Movement + Hazard Prediction")
-                    .font(.headline)
+            Text("After Sensor Update")
+                .font(.headline)
 
 
-                if let predictiveRoute
-                {
-                    Text(predictiveRoute.exitNodeID)
-                        .font(.title2)
-                        .fontWeight(.bold)
+            Text(updatedRoute?.exitNodeID ?? "No Route")
+                .font(.title2)
+                .fontWeight(.bold)
 
 
-                    Text(
-                        "Distance: \(predictiveRoute.distance, specifier: "%.1f") m"
-                    )
-                }
-            }
+            Divider()
+
+
+            Text(
+                shouldReroute
+                ? "Reroute: YES"
+                : "Reroute: NO"
+            )
+            .font(.title2)
+            .fontWeight(.bold)
         }
         .padding()
     }

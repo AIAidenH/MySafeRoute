@@ -219,13 +219,10 @@ struct RouteEngine
     
     
     // choose best exit
-    static func findSafestExit
-    (
+    static func findSafestExit(
         from startNodeID: String,
         building: BuildingMap
     ) -> RouteOption?
-    
-    
     {
         let routeOptions = evaluateExits(
             from: startNodeID,
@@ -240,25 +237,26 @@ struct RouteEngine
         }
 
 
-        let riskThreshold = 0.10 // ---> THE SCORE TO COMPARE BETWEEN DISTANCE AND RISK
+        let riskThreshold = 0.10
 
 
-        return routeOptions.min
+        guard let minimumRisk =
+            routeOptions.map({ $0.risk }).min()
+        else
         {
-            firstOption, secondOption in
+            return nil
+        }
 
 
-            let riskDifference =
-                abs(firstOption.risk - secondOption.risk)
+        let acceptableRoutes = routeOptions.filter
+        {
+            ($0.risk - minimumRisk) < riskThreshold
+        }
 
 
-            if riskDifference < riskThreshold
-            {
-                return firstOption.distance < secondOption.distance
-            }
-
-
-            return firstOption.risk < secondOption.risk
+        return acceptableRoutes.min
+        {
+            $0.distance < $1.distance
         }
     }
     
@@ -350,15 +348,12 @@ struct RouteEngine
     
     
     // choose route by routing mode
-    static func findBestExit
-    (
+    static func findBestExit(
         from startNodeID: String,
         building: BuildingMap,
         userSpeed: Double?,
         hazardArrivalTimes: [String: Double]
     ) -> RouteOption?
-    
-    
     {
         let mode = RoutingModeManager.determineMode(
             userSpeed: userSpeed
@@ -394,39 +389,47 @@ struct RouteEngine
         }
 
 
-        return routeOptions.min
+        let riskThreshold = 0.10
+
+
+        let predictiveRoutes = routeOptions.map
         {
-            firstOption, secondOption in
+            option in
 
 
-            let firstRisk = calculatePredictiveRouteRisk(
-                for: firstOption,
+            let predictiveRisk = calculatePredictiveRouteRisk(
+                for: option,
                 building: building,
                 userSpeed: userSpeed,
                 hazardArrivalTimes: hazardArrivalTimes
             )
 
 
-            let secondRisk = calculatePredictiveRouteRisk(
-                for: secondOption,
-                building: building,
-                userSpeed: userSpeed,
-                hazardArrivalTimes: hazardArrivalTimes
+            return (
+                option: option,
+                risk: predictiveRisk
             )
-
-
-            let riskDifference =
-                abs(firstRisk - secondRisk)
-
-
-            if riskDifference < 0.10
-            {
-                return firstOption.distance < secondOption.distance
-            }
-
-
-            return firstRisk < secondRisk
         }
+
+
+        guard let minimumRisk =
+            predictiveRoutes.map({ $0.risk }).min()
+        else
+        {
+            return nil
+        }
+
+
+        let acceptableRoutes = predictiveRoutes.filter
+        {
+            ($0.risk - minimumRisk) < riskThreshold
+        }
+
+
+        return acceptableRoutes.min
+        {
+            $0.option.distance < $1.option.distance
+        }?.option
     }
     
     
