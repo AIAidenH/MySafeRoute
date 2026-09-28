@@ -3,64 +3,37 @@ import SwiftUI
 
 struct ContentView: View
 {
-    let measuredUserSpeed = 1.2
-
-
-    // hazard before sensor update
-    let initialHazardTimes: [String: Double] = [
-        "hallwayA": 60.0,
-        "hallwayB": 60.0,
-        "hallwayC": 60.0,
-        "stairA": 60.0,
-        "exitA": 60.0,
-        "exitB": 60.0
-    ]
-
-
-    // hazard after sensor update
-    let updatedHazardTimes: [String: Double] = [
-        "hallwayA": 60.0,
-        "hallwayB": 60.0,
-        "hallwayC": 60.0,
-        "stairA": 60.0,
-        "exitA": 60.0,
-        "exitB": 5.0
-    ]
-
-
-
-
-    var currentRoute: RouteOption?
+    // building with unsafe exit routes
+    var dangerousBuilding: BuildingMap
     {
-        DynamicRoutingEngine.recalculateRoute(
-            from: "classroom201",
-            building: sampleBuilding,
-            userSpeed: measuredUserSpeed,
-            hazardArrivalTimes: initialHazardTimes
-        )
+        var building = sampleBuilding
+
+
+        for index in building.edges.indices
+        {
+            if building.edges[index].id == "edge5" ||
+                building.edges[index].id == "edge7"
+            {
+                building.edges[index].smokeRisk = 0.90
+                building.edges[index].heatRisk = 0.90
+                building.edges[index].fireRisk = 0.90
+                building.edges[index].crowdRisk = 0.70
+                building.edges[index].structuralRisk = 0.80
+            }
+        }
+
+
+        return building
     }
 
 
 
 
-    var updatedRoute: RouteOption?
+    var emergencyDestination: RouteOption?
     {
-        DynamicRoutingEngine.recalculateRoute(
+        RouteEngine.findEmergencyDestination(
             from: "classroom201",
-            building: sampleBuilding,
-            userSpeed: measuredUserSpeed,
-            hazardArrivalTimes: updatedHazardTimes
-        )
-    }
-
-
-
-
-    var shouldReroute: Bool
-    {
-        DynamicRoutingEngine.shouldReroute(
-            currentRoute: currentRoute,
-            newRoute: updatedRoute
+            building: dangerousBuilding
         )
     }
 
@@ -69,44 +42,39 @@ struct ContentView: View
 
     var body: some View
     {
-        VStack(alignment: .leading, spacing: 24)
+        VStack(alignment: .leading, spacing: 20)
         {
-            Text("ExitIQ Dynamic Rerouting Test")
+            Text("ExitIQ Shelter Test")
                 .font(.title)
                 .fontWeight(.bold)
 
 
-            Text("Before Sensor Update")
+            Text("All Exits Unsafe")
                 .font(.headline)
 
 
-            Text(currentRoute?.exitNodeID ?? "No Route")
+            if let emergencyDestination
+            {
+                Text(
+                    "Destination: \(emergencyDestination.destinationNodeID)"
+                )
                 .font(.title2)
                 .fontWeight(.bold)
 
 
-            Divider()
+                Text(
+                    "Risk: \(emergencyDestination.risk, specifier: "%.2f")"
+                )
 
 
-            Text("After Sensor Update")
-                .font(.headline)
-
-
-            Text(updatedRoute?.exitNodeID ?? "No Route")
-                .font(.title2)
-                .fontWeight(.bold)
-
-
-            Divider()
-
-
-            Text(
-                shouldReroute
-                ? "Reroute: YES"
-                : "Reroute: NO"
-            )
-            .font(.title2)
-            .fontWeight(.bold)
+                Text(
+                    "Distance: \(emergencyDestination.distance, specifier: "%.1f") m"
+                )
+            }
+            else
+            {
+                Text("No Route Available")
+            }
         }
         .padding()
     }

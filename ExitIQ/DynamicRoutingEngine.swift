@@ -42,7 +42,7 @@ struct DynamicRoutingEngine
         }
 
 
-        if currentRoute.exitNodeID != newRoute.exitNodeID
+        if currentRoute.destinationNodeID != newRoute.destinationNodeID
         {
             return true
         }

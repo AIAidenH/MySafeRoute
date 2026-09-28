@@ -153,6 +153,59 @@ struct RouteEngine
 
         return totalRisk / Double(edgeCount)
     }
+    
+    
+    
+    
+    // highest edge risk
+    static func calculateMaximumRisk(
+        for route: [String],
+        building: BuildingMap
+    ) -> Double
+    {
+        guard route.count >= 2
+        else
+        {
+            return 0.0
+        }
+
+
+        var maximumRisk = 0.0
+
+
+        for index in 0..<(route.count - 1)
+        {
+            let currentNodeID = route[index]
+            let nextNodeID = route[index + 1]
+
+
+            guard let edge = building.edges.first(where:
+            {
+                ($0.fromNodeID == currentNodeID &&
+                 $0.toNodeID == nextNodeID) ||
+                ($0.fromNodeID == nextNodeID &&
+                 $0.toNodeID == currentNodeID)
+            })
+            else
+            {
+                continue
+            }
+
+
+            let edgeRisk = RiskModel.calculateRisk(
+                for: edge
+            )
+
+
+            maximumRisk = max(
+                maximumRisk,
+                edgeRisk
+            )
+        }
+
+
+        return maximumRisk
+    }
 
 
     
@@ -201,7 +254,7 @@ struct RouteEngine
 
 
             let option = RouteOption(
-                exitNodeID: exitNode.id,
+                destinationNodeID: exitNode.id,
                 route: route,
                 distance: distance,
                 risk: risk
@@ -494,5 +547,160 @@ struct RouteEngine
 
 
         return min(max(combinedRisk, 0.0), 1.0)
+    }
+    
+    
+    
+    
+    // evaluate shelter routes
+    static func evaluateShelters
+    (
+        from startNodeID: String,
+        building: BuildingMap
+    ) -> [RouteOption]
+    
+    
+    {
+        let shelters = building.nodes.filter
+        {
+            $0.type == .shelter
+        }
+
+
+        var routeOptions: [RouteOption] = []
+
+
+        for shelter in shelters
+        {
+            guard let route = findRoute(
+                from: startNodeID,
+                to: shelter.id,
+                building: building
+            )
+            else
+            {
+                continue
+            }
+
+
+            let distance = calculateDistance(
+                for: route,
+                building: building
+            )
+
+
+            let risk = calculateRisk(
+                for: route,
+                building: building
+            )
+
+
+            let option = RouteOption(
+                destinationNodeID: shelter.id,
+                route: route,
+                distance: distance,
+                risk: risk
+            )
+
+
+            routeOptions.append(option)
+        }
+
+
+        return routeOptions
+    }
+    
+    
+    
+    
+    // choose shelter
+    static func findSafestShelter
+    (
+        from startNodeID: String,
+        building: BuildingMap
+    ) -> RouteOption?
+    
+    
+    {
+        let shelterOptions = evaluateShelters(
+            from: startNodeID,
+            building: building
+        )
+
+
+        guard !shelterOptions.isEmpty
+        else
+        {
+            return nil
+        }
+
+
+        return shelterOptions.min
+        {
+            $0.risk < $1.risk
+        }
+    }
+
+
+
+
+    // exit first, shelter fallback
+    static func findEmergencyDestination(
+        from startNodeID: String,
+        building: BuildingMap
+    ) -> RouteOption?
+    {
+        let exitOptions = evaluateExits(
+            from: startNodeID,
+            building: building
+        )
+
+
+        let maximumExitRisk = 0.60
+        let criticalEdgeRisk = 0.60
+
+
+        let usableExits = exitOptions.filter
+        {
+            option in
+
+
+            let maximumRisk = calculateMaximumRisk(
+                for: option.route,
+                building: building
+            )
+
+
+            return option.risk < maximumExitRisk &&
+                   maximumRisk < criticalEdgeRisk
+        }
+
+
+        if !usableExits.isEmpty
+        {
+            let minimumRisk =
+                usableExits.map({ $0.risk }).min() ?? 0.0
+
+
+            let riskThreshold = 0.10
+
+
+            let acceptableRoutes = usableExits.filter
+            {
+                ($0.risk - minimumRisk) < riskThreshold
+            }
+
+
+            return acceptableRoutes.min
+            {
+                $0.distance < $1.distance
+            }
+        }
+
+
+        return findSafestShelter(
+            from: startNodeID,
+            building: building
+        )
     }
 }
