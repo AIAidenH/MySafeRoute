@@ -4,6 +4,39 @@ import SwiftUI
 struct ContentView: View
 {
     @State private var currentNodeID = "classroom201"
+    @State private var hazardActive = false
+    @StateObject private var headingManager =
+        DeviceHeadingManager()
+    
+    
+    
+    
+    var activeBuilding: BuildingMap
+    {
+        if !hazardActive
+        {
+            return sampleBuilding
+        }
+
+
+        var building = sampleBuilding
+
+
+        if let edgeIndex = building.edges.firstIndex(where:
+        {
+            $0.id == "edge7"
+        })
+        {
+            building.edges[edgeIndex].smokeRisk = 0.90
+            building.edges[edgeIndex].heatRisk = 0.90
+            building.edges[edgeIndex].fireRisk = 0.90
+            building.edges[edgeIndex].crowdRisk = 0.70
+            building.edges[edgeIndex].structuralRisk = 0.80
+        }
+
+
+        return building
+    }
 
 
 
@@ -12,45 +45,122 @@ struct ContentView: View
     {
         RouteEngine.findEmergencyDestination(
             from: currentNodeID,
-            building: sampleBuilding
+            building: activeBuilding
         )
     }
 
 
 
 
-    var nextInstruction: String
+    var nextDestinationName: String
     {
-        guard let selectedRoute
+        guard let selectedRoute,
+              let currentIndex = selectedRoute.route.firstIndex(
+                of: currentNodeID
+              )
         else
         {
-            return "No safe route available"
+            return "No Safe Route"
         }
 
 
-        return NavigationEngine.nextInstruction(
-            for: selectedRoute.route,
-            currentNodeID: currentNodeID,
-            building: sampleBuilding
-        ) ?? "Destination reached"
+        let nextIndex = currentIndex + 1
+
+
+        guard nextIndex < selectedRoute.route.count
+        else
+        {
+            return "Destination Reached"
+        }
+
+
+        let nextNodeID = selectedRoute.route[nextIndex]
+
+
+        return activeBuilding.nodes.first(where:
+        {
+            $0.id == nextNodeID
+        })?.name ?? nextNodeID
     }
 
 
 
 
-    var distanceToNextNode: Double?
+    var distanceToNextDestination: Double
     {
         guard let selectedRoute
         else
         {
-            return nil
+            return 0.0
         }
 
 
         return NavigationEngine.distanceToNextNode(
             for: selectedRoute.route,
             currentNodeID: currentNodeID,
-            building: sampleBuilding
+            building: activeBuilding
+        ) ?? 0.0
+    }
+
+
+
+
+    var currentLocationName: String
+    {
+        activeBuilding.nodes.first(where:
+        {
+            $0.id == currentNodeID
+        })?.name ?? currentNodeID
+    }
+    
+    
+    
+    
+    var finalDestinationName: String
+    {
+        guard let selectedRoute,
+              let destination = activeBuilding.nodes.first(where:
+              {
+                  $0.id == selectedRoute.destinationNodeID
+              })
+        else
+        {
+            return ""
+        }
+
+
+        return destination.name
+    }
+
+
+
+
+    var totalRemainingDistance: Double
+    {
+        selectedRoute?.distance ?? 0.0
+    }
+
+
+
+
+    var direction: Double
+    {
+        guard let selectedRoute,
+              let routeDirection =
+                NavigationEngine.directionToNextNode(
+                    for: selectedRoute.route,
+                    currentNodeID: currentNodeID,
+                    building: activeBuilding
+                )
+        else
+        {
+            return 0.0
+        }
+
+
+        return HeadingEngine.relativeDirection(
+            routeDirection: routeDirection,
+            deviceHeading: headingManager.heading
         )
     }
 
@@ -59,63 +169,110 @@ struct ContentView: View
 
     var body: some View
     {
-        VStack(alignment: .leading, spacing: 20)
+        VStack(spacing: 0)
         {
-            Text("ExitIQ Live Navigation Test")
-                .font(.title)
+            Spacer()
+
+
+            Text(nextDestinationName)
+                .font(.title2)
                 .fontWeight(.bold)
 
 
-            Text("Current Location")
-                .font(.headline)
+            Text(
+                selectedRoute?.route.count == 1
+                    ? "ARRIVED"
+                    : "NEXT"
+            )
+            .font(.caption)
+            .foregroundStyle(.secondary)
 
 
-            Text(currentNodeID)
+            Spacer()
 
 
-            Divider()
-
-
-            if let selectedRoute
+            if selectedRoute?.route.count == 1
             {
-                Text("Destination")
-                    .font(.headline)
+                Image(systemName: "checkmark")
+                    .font(.system(size: 130, weight: .black))
 
 
-                Text(selectedRoute.destinationNodeID)
-
-
-                Text("Next Instruction")
-                    .font(.headline)
-
-
-                Text(nextInstruction)
-                    .font(.title2)
-                    .fontWeight(.bold)
-
-
-                if let distanceToNextNode
-                {
-                    Text(
-                        "\(distanceToNextNode, specifier: "%.1f") m"
+                Text("0 m")
+                    .font(.system(size: 34, weight: .bold))
+                    .padding(.top, 25)
+            }
+            else
+            {
+                Image(systemName: "arrow.up")
+                    .font(.system(size: 150, weight: .black))
+                    .rotationEffect(
+                        .degrees(direction)
                     )
-                    .font(.title3)
+
+
+                Text(
+                    "\(distanceToNextDestination, specifier: "%.0f") m"
+                )
+                .font(.system(size: 34, weight: .bold))
+                .padding(.top, 25)
+            }
+
+
+            Spacer()
+
+
+            HStack(alignment: .center)
+            {
+                VStack(alignment: .leading, spacing: 3)
+                {
+                    Text(currentLocationName)
+                        .font(.headline)
+
+
+                    Text("CURRENT LOCATION")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
                 }
 
 
-                Button("Move to Next Location")
+                Spacer()
+
+
+                Text(
+                    "\(totalRemainingDistance, specifier: "%.0f") m"
+                )
+                .font(.subheadline)
+                .fontWeight(.semibold)
+            }
+
+
+            Spacer()
+
+
+            if let selectedRoute,
+               selectedRoute.route.count > 1
+            {
+                Button("Simulate Movement")
                 {
                     moveToNextNode(
                         route: selectedRoute.route
                     )
                 }
-                .buttonStyle(.borderedProminent)
+                .buttonStyle(.bordered)
             }
-            else
+            
+            
+            Button(
+                hazardActive
+                    ? "Clear Hazard"
+                    : "Simulate Hazard"
+            )
             {
-                Text("No safe route available")
+                hazardActive.toggle()
             }
+            .buttonStyle(.bordered)
         }
+        .frame(maxWidth: .infinity)
         .padding()
     }
 
@@ -148,6 +305,11 @@ struct ContentView: View
 
         currentNodeID = route[nextIndex]
     }
+    
+    
+    
+    
+    
 }
 
 

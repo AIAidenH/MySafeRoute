@@ -166,4 +166,66 @@ struct NavigationEngine
 
         return edge.distance
     }
+    
+    
+    
+    
+    // direction to next node
+    static func directionToNextNode
+    (
+        for route: [String],
+        currentNodeID: String,
+        building: BuildingMap
+    ) -> Double?
+    
+    
+    {
+        guard let currentIndex = route.firstIndex(
+            of: currentNodeID
+        )
+        else
+        {
+            return nil
+        }
+
+
+        let nextIndex = currentIndex + 1
+
+
+        guard nextIndex < route.count
+        else
+        {
+            return nil
+        }
+
+
+        let nextNodeID = route[nextIndex]
+
+
+        guard let currentNode = building.nodes.first(where:
+        {
+            $0.id == currentNodeID
+        }),
+        let nextNode = building.nodes.first(where:
+        {
+            $0.id == nextNodeID
+        })
+        else
+        {
+            return nil
+        }
+
+
+        let deltaX = nextNode.x - currentNode.x
+        let deltaY = nextNode.y - currentNode.y
+
+
+        let angle = atan2(
+            deltaX,
+            deltaY
+        )
+
+
+        return angle * 180 / .pi
+    }
 }

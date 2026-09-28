@@ -1,8 +1,8 @@
 import Foundation
 
 
-// defines the type of location inside the building
-enum BuildingNodeType {
+enum BuildingNodeType
+{
     case room
     case hallway
     case stair
@@ -11,14 +11,20 @@ enum BuildingNodeType {
 }
 
 
-// represents a physical location in the building
-struct BuildingNode: Identifiable {
+
+
+struct BuildingNode: Identifiable
+{
     let id: String
     let name: String
     let floor: Int
-    let type: BuildingNodeType
 
-    
-    // optional sensor installed near this location
+
+    // position on building map
+    let x: Double
+    let y: Double
+
+
+    let type: BuildingNodeType
     var sensor: SensorNode?
 }

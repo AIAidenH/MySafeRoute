@@ -15,69 +15,85 @@ let sampleBuilding = BuildingMap(
             id: "classroom201",
             name: "Classroom 201",
             floor: 2,
+            x: 0,
+            y: 10,
             type: .room,
             sensor: nil
         ),
 
-        
+
         BuildingNode(
             id: "hallwayA",
             name: "East Hallway A",
             floor: 2,
+            x: 6,
+            y: 10,
             type: .hallway,
             sensor: sensorA
         ),
 
-        
+
         BuildingNode(
             id: "hallwayB",
             name: "East Hallway B",
             floor: 2,
+            x: 14,
+            y: 10,
             type: .hallway,
             sensor: sensorB
         ),
 
-        
+
         BuildingNode(
             id: "hallwayC",
             name: "East Hallway C",
             floor: 2,
+            x: 22,
+            y: 10,
             type: .hallway,
             sensor: sensorC
         ),
 
-        
+
         BuildingNode(
             id: "stairA",
             name: "Stair A",
             floor: 2,
+            x: 22,
+            y: 0,
             type: .stair,
             sensor: nil
         ),
-        
+
 
         BuildingNode(
             id: "exitA",
             name: "Exit A",
             floor: 2,
-            type: .exit,
-            sensor: nil
-        ),
-        
-        
-        BuildingNode(
-            id: "exitB",
-            name: "Exit B",
-            floor: 2,
+            x: 22,
+            y: -12,
             type: .exit,
             sensor: nil
         ),
 
-        
+
+        BuildingNode(
+            id: "exitB",
+            name: "Exit B",
+            floor: 2,
+            x: 24,
+            y: 10,
+            type: .exit,
+            sensor: nil
+        ),
+
+
         BuildingNode(
             id: "shelterA",
             name: "Refuge Room A",
             floor: 2,
+            x: 14,
+            y: 15,
             type: .shelter,
             sensor: nil
         )
