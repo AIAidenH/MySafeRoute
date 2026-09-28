@@ -8,10 +8,14 @@ struct TravelTime
     static let walkingSpeed = 1.4
 
 
-    // time from distance
-    static func calculate(
-        distance: Double
+    // travel time from distance
+    static func calculate
+    (
+        distance: Double,
+        userSpeed: Double? = nil
     ) -> Double
+    
+    
     {
         if distance <= 0
         {
@@ -19,6 +23,15 @@ struct TravelTime
         }
 
 
-        return distance / walkingSpeed
+        let speed = userSpeed ?? walkingSpeed
+
+
+        if speed <= 0
+        {
+            return 0.0
+        }
+
+
+        return distance / speed
     }
 }

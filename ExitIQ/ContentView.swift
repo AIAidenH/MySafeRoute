@@ -3,66 +3,44 @@ import SwiftUI
 
 struct ContentView: View
 {
-    var route: [String]
+    // simulated measured speed
+    let measuredUserSpeed: Double = 1.2
+
+
+    // predicted hazard arrival times
+    // predicted hazard arrival times
+    let hazardArrivalTimes: [String: Double] = [
+        "hallwayA": 60.0,
+        "hallwayB": 60.0,
+        "hallwayC": 60.0,
+        "stairA": 60.0,
+        "exitA": 60.0,
+        "exitB": 5.0
+    ]
+
+
+
+
+    var initialRoute: RouteOption?
     {
-        RouteEngine.findRoute(
+        RouteEngine.findBestExit(
             from: "classroom201",
-            to: "exitA",
-            building: sampleBuilding
-        ) ?? []
-    }
-
-
-
-
-    var arrivalTimes: [String: Double]
-    {
-        RouteEngine.calculateArrivalTimes(
-            for: route,
-            building: sampleBuilding
+            building: sampleBuilding,
+            userSpeed: nil,
+            hazardArrivalTimes: hazardArrivalTimes
         )
     }
 
 
 
 
-    var hazardSpeed: Double
+    var predictiveRoute: RouteOption?
     {
-        HazardPrediction.calculateSpeed(
-            distance: 8.0,
-            firstTime: sensorAReading.time,
-            secondTime: sensorBReading.time
-        ) ?? 0.0
-    }
-
-
-
-
-    var hazardArrivalTime: Double
-    {
-        HazardPrediction.calculateArrivalTime(
-            currentTime: sensorBReading.time,
-            distance: 8.0,
-            speed: hazardSpeed
-        ) ?? 0.0
-    }
-
-
-
-
-    var userArrivalTime: Double
-    {
-        arrivalTimes["hallwayC"] ?? 0.0
-    }
-
-
-
-
-    var predictiveRisk: Double
-    {
-        PredictiveRisk.calculateArrivalRisk(
-            userArrivalTime: userArrivalTime,
-            hazardArrivalTime: hazardArrivalTime
+        RouteEngine.findBestExit(
+            from: "classroom201",
+            building: sampleBuilding,
+            userSpeed: measuredUserSpeed,
+            hazardArrivalTimes: hazardArrivalTimes
         )
     }
 
@@ -71,32 +49,59 @@ struct ContentView: View
 
     var body: some View
     {
-        VStack(alignment: .leading, spacing: 20)
+        VStack(alignment: .leading, spacing: 24)
         {
-            Text("ExitIQ Prediction Test")
+            Text("ExitIQ Dynamic Routing Test")
                 .font(.title)
                 .fontWeight(.bold)
 
 
-            Text("Hallway C")
-                .font(.title2)
-                .fontWeight(.bold)
+            VStack(alignment: .leading, spacing: 8)
+            {
+                Text("Initial Routing")
+                    .font(.headline)
 
 
-            Text(
-                "User Arrival: \(userArrivalTime, specifier: "%.1f") sec"
-            )
+                if let initialRoute
+                {
+                    Text(initialRoute.exitNodeID)
+                        .font(.title2)
+                        .fontWeight(.bold)
 
 
-            Text(
-                "Hazard Arrival: \(hazardArrivalTime, specifier: "%.1f") sec"
-            )
+                    Text(
+                        "Risk: \(initialRoute.risk, specifier: "%.2f")"
+                    )
 
 
-            Text(
-                "Predicted Risk: \(predictiveRisk, specifier: "%.2f")"
-            )
-            .fontWeight(.semibold)
+                    Text(
+                        "Distance: \(initialRoute.distance, specifier: "%.1f") m"
+                    )
+                }
+            }
+
+
+            Divider()
+
+
+            VStack(alignment: .leading, spacing: 8)
+            {
+                Text("After Movement + Hazard Prediction")
+                    .font(.headline)
+
+
+                if let predictiveRoute
+                {
+                    Text(predictiveRoute.exitNodeID)
+                        .font(.title2)
+                        .fontWeight(.bold)
+
+
+                    Text(
+                        "Distance: \(predictiveRoute.distance, specifier: "%.1f") m"
+                    )
+                }
+            }
         }
         .padding()
     }

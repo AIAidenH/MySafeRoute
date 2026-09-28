@@ -269,7 +269,8 @@ struct RouteEngine
     static func calculateArrivalTimes
     (
         for route: [String],
-        building: BuildingMap
+        building: BuildingMap,
+        userSpeed: Double? = nil
     ) -> [String: Double]
     
     
@@ -307,7 +308,8 @@ struct RouteEngine
 
 
                 arrivalTimes[toNodeID] = TravelTime.calculate(
-                    distance: totalDistance
+                    distance: totalDistance,
+                    userSpeed: userSpeed
                 )
             }
         }
@@ -342,5 +344,152 @@ struct RouteEngine
 
 
         return nodeIDs
+    }
+    
+    
+    
+    
+    // choose route by routing mode
+    static func findBestExit
+    (
+        from startNodeID: String,
+        building: BuildingMap,
+        userSpeed: Double?,
+        hazardArrivalTimes: [String: Double]
+    ) -> RouteOption?
+    
+    
+    {
+        let mode = RoutingModeManager.determineMode(
+            userSpeed: userSpeed
+        )
+
+
+        if mode == .initial
+        {
+            return findSafestExit(
+                from: startNodeID,
+                building: building
+            )
+        }
+
+
+        guard let userSpeed
+        else
+        {
+            return nil
+        }
+
+
+        let routeOptions = evaluateExits(
+            from: startNodeID,
+            building: building
+        )
+
+
+        guard !routeOptions.isEmpty
+        else
+        {
+            return nil
+        }
+
+
+        return routeOptions.min
+        {
+            firstOption, secondOption in
+
+
+            let firstRisk = calculatePredictiveRouteRisk(
+                for: firstOption,
+                building: building,
+                userSpeed: userSpeed,
+                hazardArrivalTimes: hazardArrivalTimes
+            )
+
+
+            let secondRisk = calculatePredictiveRouteRisk(
+                for: secondOption,
+                building: building,
+                userSpeed: userSpeed,
+                hazardArrivalTimes: hazardArrivalTimes
+            )
+
+
+            let riskDifference =
+                abs(firstRisk - secondRisk)
+
+
+            if riskDifference < 0.10
+            {
+                return firstOption.distance < secondOption.distance
+            }
+
+
+            return firstRisk < secondRisk
+        }
+    }
+    
+    
+    
+    
+    // predictive risk for route
+    static func calculatePredictiveRouteRisk
+    (
+        for option: RouteOption,
+        building: BuildingMap,
+        userSpeed: Double,
+        hazardArrivalTimes: [String: Double]
+    ) -> Double
+    
+    
+    {
+        let userArrivalTimes = calculateArrivalTimes(
+            for: option.route,
+            building: building,
+            userSpeed: userSpeed
+        )
+
+
+        var totalRisk = 0.0
+        var riskCount = 0
+
+
+        for nodeID in option.route
+        {
+            guard let userArrivalTime = userArrivalTimes[nodeID],
+                  let hazardArrivalTime = hazardArrivalTimes[nodeID]
+            else
+            {
+                continue
+            }
+
+
+            let risk = PredictiveRisk.calculateArrivalRisk(
+                userArrivalTime: userArrivalTime,
+                hazardArrivalTime: hazardArrivalTime
+            )
+
+
+            totalRisk += risk
+            riskCount += 1
+        }
+
+
+        if riskCount == 0
+        {
+            return option.risk
+        }
+
+
+        let predictedRisk =
+            totalRisk / Double(riskCount)
+
+
+        let combinedRisk =
+            (option.risk * 0.6) +
+            (predictedRisk * 0.4)
+
+
+        return min(max(combinedRisk, 0.0), 1.0)
     }
 }
