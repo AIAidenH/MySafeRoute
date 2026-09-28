@@ -81,8 +81,8 @@ let sampleBuilding = BuildingMap(
             id: "exitB",
             name: "Exit B",
             floor: 2,
-            x: 24,
-            y: 10,
+            x: 6,
+            y: 20,
             type: .exit,
             sensor: nil
         ),
