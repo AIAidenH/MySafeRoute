@@ -5,6 +5,7 @@ struct ContentView: View
 {
     @State private var currentNodeID = "classroom201"
     @State private var hazardActive = false
+    @State private var showMap = false
     @StateObject private var headingManager =
         DeviceHeadingManager()
     
@@ -271,9 +272,38 @@ struct ContentView: View
                 hazardActive.toggle()
             }
             .buttonStyle(.bordered)
+            
+            
+            // building map
+            Button("Show Map")
+            {
+                showMap = true
+            }
+            .buttonStyle(.bordered)
+            .padding(.top, 10)
         }
         .frame(maxWidth: .infinity)
         .padding()
+        
+        
+        .sheet(
+            isPresented: $showMap
+        )
+        {
+            if let selectedRoute
+            {
+                BuildingMapView(
+                    building: activeBuilding,
+                    currentNodeID: currentNodeID,
+                    route: selectedRoute.route
+                )
+                .frame(
+                    maxWidth: .infinity,
+                    maxHeight: .infinity
+                )
+                .padding()
+            }
+        }
     }
 
 
