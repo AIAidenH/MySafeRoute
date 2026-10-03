@@ -98,7 +98,7 @@ struct BuildingMapView: View
                     }
                 }
                 .stroke(
-                    .primary,
+                    .green,
                     style: StrokeStyle(
                         lineWidth: 8,
                         lineCap: .round,
@@ -123,15 +123,25 @@ struct BuildingMapView: View
                         with: edge.toNodeID
                     )
                     {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.system(size: 24))
-                            .position(
-                                midpoint(
-                                    between: fromNode,
-                                    and: toNode,
-                                    in: geometry.size
-                                )
+                        ZStack
+                        {
+                            Image(systemName: "triangle.fill")
+                                .font(.system(size: 36))
+                                .foregroundStyle(.yellow)
+
+
+                            Image(systemName: "exclamationmark")
+                                .font(.system(size: 17, weight: .black))
+                                .foregroundStyle(.red)
+                                .offset(y: 2)
+                        }
+                        .position(
+                            midpoint(
+                                between: fromNode,
+                                and: toNode,
+                                in: geometry.size
                             )
+                        )
                     }
                 }
 
@@ -146,8 +156,20 @@ struct BuildingMapView: View
                     {
                         if node.id == currentNodeID
                         {
-                            Image(systemName: "location.circle.fill")
-                                .font(.system(size: 28, weight: .bold))
+                            ZStack
+                            {
+                                Circle()
+                                    .fill(.blue)
+                                    .frame(
+                                        width: 32,
+                                        height: 32
+                                    )
+
+
+                                Image(systemName: "location.fill")
+                                    .font(.system(size: 15, weight: .bold))
+                                    .foregroundStyle(.white)
+                            }
                         }
                         else
                         {
@@ -155,7 +177,8 @@ struct BuildingMapView: View
                             {
                             case .exit:
                                 Image(systemName: "door.left.hand.open")
-                                    .font(.system(size: 20, weight: .bold))
+                                    .font(.system(size: 26, weight: .bold))
+                                    .foregroundStyle(.white)
 
 
                             case .shelter:
