@@ -301,7 +301,7 @@ struct BuildingMapView: View
         case "hallwayA":
             return CGSize(
                 width: 0,
-                height: 24
+                height: 42
             )
 
 

@@ -281,27 +281,27 @@ struct ContentView: View
                         }
                         .buttonStyle(.borderedProminent)
                         .tint(.gray.opacity(0.35))
+
+
+                        Button(
+                            hazardActive
+                                ? "Clear Hazard"
+                                : "Hazard"
+                        )
+                        {
+                            hazardActive.toggle()
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(.gray.opacity(0.35))
                     }
 
 
-                    Button(
-                        hazardActive
-                            ? "Clear Hazard"
-                            : "Hazard"
-                    )
-                    {
-                        hazardActive.toggle()
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.gray.opacity(0.35))
-
-
-                    // simulate user movement
                     Button("Map")
                     {
                         showMap = true
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderedProminent)
+                    .tint(.blue.opacity(0.70))
                 }
                 
                 
@@ -332,25 +332,45 @@ struct ContentView: View
                 VStack(spacing: 0)
                 {
                     VStack(spacing: 4)
-                    {
-                        Text("EVACUATION MAP")
-                            .font(.headline)
+                        {
+                            Text("EVACUATION MAP")
+                                .font(.headline)
 
 
-                        Text(
-                            hazardActive
-                                ? "Route updated due to detected hazard"
-                                : "Current safest route"
-                        )
-                        .font(.caption)
-                        .foregroundStyle(
-                            hazardActive
-                                ? .red
-                                : .green.opacity(0.65)
-                        )
-                    }
-                    .padding(.top)
-                    .padding(.bottom, 8)
+                            Text(
+                                hazardActive
+                                    ? "Route updated due to detected hazard"
+                                    : "Current safest route"
+                            )
+                            .font(.caption)
+                            .foregroundStyle(
+                                hazardActive
+                                    ? .red
+                                    : .green
+                            )
+                        }
+                        .padding(.top, 30)
+
+
+                        HStack
+                        {
+                            Spacer()
+
+
+                            Button
+                            {
+                                showMap = false
+                            }
+                            label:
+                            {
+                                Image(systemName: "xmark.circle.fill")
+                                    .font(.system(size: 26))
+                                    .foregroundStyle(.gray)
+                            }
+                            .offset(y: -34)
+                        }
+                        .padding(.horizontal)
+                        .padding(.bottom, 8)
 
 
                     BuildingMapView(
@@ -364,6 +384,7 @@ struct ContentView: View
                     )
                     .padding()
                 }
+                .presentationDragIndicator(.visible)
             }
         }
     }

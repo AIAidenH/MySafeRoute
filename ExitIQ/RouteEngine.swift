@@ -678,20 +678,7 @@ struct RouteEngine
 
         if !usableExits.isEmpty
         {
-            let minimumRisk =
-                usableExits.map({ $0.risk }).min() ?? 0.0
-
-
-            let riskThreshold = 0.10
-
-
-            let acceptableRoutes = usableExits.filter
-            {
-                ($0.risk - minimumRisk) < riskThreshold
-            }
-
-
-            return acceptableRoutes.min
+            return usableExits.min
             {
                 $0.distance < $1.distance
             }
