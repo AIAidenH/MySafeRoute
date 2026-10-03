@@ -113,25 +113,6 @@ struct ContentView: View
             $0.id == currentNodeID
         })?.name ?? currentNodeID
     }
-    
-    
-    
-    
-    var finalDestinationName: String
-    {
-        guard let selectedRoute,
-              let destination = activeBuilding.nodes.first(where:
-              {
-                  $0.id == selectedRoute.destinationNodeID
-              })
-        else
-        {
-            return ""
-        }
-
-
-        return destination.name
-    }
 
 
 
@@ -299,7 +280,7 @@ struct ContentView: View
                     .buttonStyle(.bordered)
 
 
-                    // building map
+                    // simulate user movement
                     Button("Map")
                     {
                         showMap = true
