@@ -232,7 +232,17 @@ struct ContentView: View
             {
                 Image(systemName: "checkmark")
                     .font(.system(size: 180, weight: .black))
-                    .foregroundStyle(.green)
+                    .foregroundStyle(
+                        Color(
+                            red: 0.10,
+                            green: 0.95,
+                            blue: 0.30
+                        )
+                    )
+                    .shadow(
+                        color: Color.green.opacity(0.35),
+                        radius: 12
+                    )
 
 
                 Text("0 m")
@@ -248,7 +258,17 @@ struct ContentView: View
                     .rotationEffect(
                         .degrees(direction)
                     )
-                    .foregroundStyle(.green)
+                    .foregroundStyle(
+                        Color(
+                            red: 0.10,
+                            green: 0.95,
+                            blue: 0.30
+                        )
+                    )
+                    .shadow(
+                        color: Color.green.opacity(0.35),
+                        radius: 12
+                    )
 
 
                 Text(
@@ -256,7 +276,13 @@ struct ContentView: View
                 )
                 .font(.system(size: 60, weight: .black, design: .rounded))
                 .tracking(-2)
-                .foregroundStyle(.green)
+                .foregroundStyle(
+                    Color(
+                        red: 0.10,
+                        green: 0.95,
+                        blue: 0.30
+                    )
+                )
                 .padding(.top, 25)
             }
 
@@ -412,15 +438,19 @@ struct ContentView: View
 
 
                             Text(
-                                hazardActive
-                                    ? "Route updated due to detected hazard"
-                                    : "Current safest route"
+                                criticalActive
+                                    ? "Refuge route active"
+                                    : hazardActive
+                                        ? "Route updated due to detected hazard"
+                                        : "Current safest route"
                             )
                             .font(.caption)
                             .foregroundStyle(
-                                hazardActive
-                                    ? .red
-                                    : .green
+                                criticalActive
+                                    ? .orange
+                                    : hazardActive
+                                        ? .red
+                                        : .green
                             )
                         }
                         .padding(.top, 30)
