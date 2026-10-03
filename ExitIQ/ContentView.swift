@@ -5,6 +5,7 @@ struct ContentView: View
 {
     @State private var currentNodeID = "classroom201"
     @State private var hazardActive = false
+    @State private var criticalActive = false
     @State private var showMap = false
     @StateObject private var headingManager =
         DeviceHeadingManager()
@@ -14,25 +15,40 @@ struct ContentView: View
     
     var activeBuilding: BuildingMap
     {
-        if !hazardActive
-        {
-            return sampleBuilding
-        }
-
-
         var building = sampleBuilding
 
 
-        if let edgeIndex = building.edges.firstIndex(where:
+        // Exit B hazard
+        if hazardActive || criticalActive
         {
-            $0.id == "edge7"
-        })
+            if let edgeIndex = building.edges.firstIndex(where:
+            {
+                $0.id == "edge7"
+            })
+            {
+                building.edges[edgeIndex].smokeRisk = 0.90
+                building.edges[edgeIndex].heatRisk = 0.90
+                building.edges[edgeIndex].fireRisk = 0.90
+                building.edges[edgeIndex].crowdRisk = 0.70
+                building.edges[edgeIndex].structuralRisk = 0.80
+            }
+        }
+
+
+        // Exit A hazard
+        if criticalActive
         {
-            building.edges[edgeIndex].smokeRisk = 0.90
-            building.edges[edgeIndex].heatRisk = 0.90
-            building.edges[edgeIndex].fireRisk = 0.90
-            building.edges[edgeIndex].crowdRisk = 0.70
-            building.edges[edgeIndex].structuralRisk = 0.80
+            if let edgeIndex = building.edges.firstIndex(where:
+            {
+                $0.id == "edge5"
+            })
+            {
+                building.edges[edgeIndex].smokeRisk = 0.90
+                building.edges[edgeIndex].heatRisk = 0.90
+                building.edges[edgeIndex].fireRisk = 0.90
+                building.edges[edgeIndex].crowdRisk = 0.70
+                building.edges[edgeIndex].structuralRisk = 0.80
+            }
         }
 
 
@@ -283,17 +299,47 @@ struct ContentView: View
                         .tint(.gray.opacity(0.35))
 
 
-                        Button(
-                            hazardActive
-                                ? "Clear Hazard"
-                                : "Hazard"
-                        )
+                        Button("Hazard")
                         {
-                            hazardActive.toggle()
+                            if hazardActive
+                            {
+                                hazardActive = false
+                            }
+                            else
+                            {
+                                criticalActive = false
+                                hazardActive = true
+                            }
                         }
                         .buttonStyle(.borderedProminent)
-                        .tint(.gray.opacity(0.35))
+                        .tint(
+                            hazardActive
+                                ? .gray
+                                : .gray.opacity(0.35)
+                        )
                     }
+                    
+                    
+                    
+                    Button("Critical")
+                    {
+                        if criticalActive
+                        {
+                            criticalActive = false
+                        }
+                        else
+                        {
+                            hazardActive = false
+                            criticalActive = true
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(
+                        criticalActive
+                            ? .gray
+                            : .gray.opacity(0.35)
+                    )
+                    
 
 
                     Button("Map")
