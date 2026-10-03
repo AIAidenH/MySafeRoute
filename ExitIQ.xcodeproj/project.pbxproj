@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B2C18FD30718E4400065FC9 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 7B2C18FC30718E3800065FC9 /* README.md */; };
 		8B54D4AC30495DA700706B68 /* SensorNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4AB30495DA700706B68 /* SensorNode.swift */; };
 		8B54D4AE304964C100706B68 /* SimulationData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4AD304964C100706B68 /* SimulationData.swift */; };
 		8B54D4B03049657500706B68 /* BuildingNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B54D4AF3049657500706B68 /* BuildingNode.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7B2C18FC30718E3800065FC9 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8B54D4AB30495DA700706B68 /* SensorNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SensorNode.swift; sourceTree = "<group>"; };
 		8B54D4AD304964C100706B68 /* SimulationData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulationData.swift; sourceTree = "<group>"; };
 		8B54D4AF3049657500706B68 /* BuildingNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuildingNode.swift; sourceTree = "<group>"; };
@@ -47,6 +49,7 @@
 		8BA558A63049552100D6E113 = {
 			isa = PBXGroup;
 			children = (
+				7B2C18FC30718E3800065FC9 /* README.md */,
 				8B54D4AB30495DA700706B68 /* SensorNode.swift */,
 				8B54D4AD304964C100706B68 /* SimulationData.swift */,
 				8B54D4AF3049657500706B68 /* BuildingNode.swift */,
@@ -130,6 +133,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7B2C18FD30718E4400065FC9 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
