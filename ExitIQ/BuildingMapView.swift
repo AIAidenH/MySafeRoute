@@ -6,6 +6,8 @@ struct BuildingMapView: View
     let building: BuildingMap
     let currentNodeID: String
     let route: [String]
+    let routeDirection: Double
+    let relativeDirection: Double
 
 
     var body: some View
@@ -160,15 +162,16 @@ struct BuildingMapView: View
                             {
                                 Circle()
                                     .fill(.blue)
-                                    .frame(
-                                        width: 32,
-                                        height: 32
-                                    )
+                                    .frame(width: 32,height: 32)
 
-
-                                Image(systemName: "location.fill")
+                                Image(systemName: "arrow.up")
                                     .font(.system(size: 15, weight: .bold))
                                     .foregroundStyle(.white)
+                                    .rotationEffect(
+                                        .degrees(
+                                            routeDirection - relativeDirection
+                                        )
+                                    )
                             }
                         }
                         else
@@ -411,7 +414,9 @@ struct BuildingMapView: View
             "hallwayC",
             "stairA",
             "exitA"
-        ]
+        ],
+        routeDirection: 90,
+        relativeDirection: 0
     )
     .padding()
 }

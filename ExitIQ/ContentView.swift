@@ -139,6 +139,27 @@ struct ContentView: View
     }
 
 
+    
+    
+    var routeDirection: Double
+    {
+        guard let selectedRoute,
+              let routeDirection =
+                NavigationEngine.directionToNextNode(
+                    for: selectedRoute.route,
+                    currentNodeID: currentNodeID,
+                    building: activeBuilding
+                )
+        else
+        {
+            return 0.0
+        }
+
+
+        return routeDirection
+    }
+    
+    
 
 
     var direction: Double
@@ -173,16 +194,19 @@ struct ContentView: View
             
             
             Text(
-                hazardActive
-                    ? "⚠ HAZARD DETECTED · ROUTE UPDATED"
-                    : "SAFE ROUTE ACTIVE"
+                criticalActive
+                    ? "⚠ CRITICAL · REFUGE ROUTE ACTIVE"
+                    : hazardActive
+                        ? "⚠ HAZARD DETECTED · ROUTE UPDATED"
+                        : "SAFE ROUTE ACTIVE"
             )
             .font(.caption)
-            .fontWeight(.bold)
             .foregroundStyle(
-                hazardActive
-                    ? .red
-                    : .green.opacity(0.65)
+                criticalActive
+                    ? .orange
+                    : hazardActive
+                        ? .red
+                        : .green.opacity(0.65)
             )
             .padding(.bottom, 12)
 
@@ -426,7 +450,9 @@ struct ContentView: View
                     BuildingMapView(
                         building: activeBuilding,
                         currentNodeID: currentNodeID,
-                        route: selectedRoute.route
+                        route: selectedRoute.route,
+                        routeDirection: routeDirection,
+                        relativeDirection: direction
                     )
                     .frame(
                         maxWidth: .infinity,
