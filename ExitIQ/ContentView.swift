@@ -306,6 +306,13 @@ struct ContentView: View
                     }
                     .buttonStyle(.bordered)
                 }
+                
+                
+                Text("PROTOTYPE · SIMULATED EMERGENCY DATA")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                
+                
             }
             .padding(.top, 10)
         }
