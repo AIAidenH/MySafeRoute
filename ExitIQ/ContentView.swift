@@ -317,28 +317,32 @@ struct ContentView: View
                                 ? .gray
                                 : .gray.opacity(0.35)
                         )
+                        
+                        
+                        
+                        Button("Critical")
+                        {
+                            if criticalActive
+                            {
+                                criticalActive = false
+                            }
+                            else
+                            {
+                                hazardActive = false
+                                criticalActive = true
+                            }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(
+                            criticalActive
+                                ? .gray
+                                : .gray.opacity(0.35)
+                        )
                     }
                     
                     
                     
-                    Button("Critical")
-                    {
-                        if criticalActive
-                        {
-                            criticalActive = false
-                        }
-                        else
-                        {
-                            hazardActive = false
-                            criticalActive = true
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(
-                        criticalActive
-                            ? .gray
-                            : .gray.opacity(0.35)
-                    )
+                    
                     
 
 
