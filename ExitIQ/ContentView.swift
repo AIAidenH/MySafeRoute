@@ -173,6 +173,21 @@ struct ContentView: View
         VStack(spacing: 0)
         {
             Spacer()
+            
+            
+            Text(
+                hazardActive
+                    ? "⚠ HAZARD DETECTED · ROUTE UPDATED"
+                    : "SAFE ROUTE ACTIVE"
+            )
+            .font(.caption)
+            .fontWeight(.semibold)
+            .foregroundStyle(
+                hazardActive
+                    ? .red
+                    : .secondary
+            )
+            .padding(.bottom, 12)
 
 
             Text(nextDestinationName)
