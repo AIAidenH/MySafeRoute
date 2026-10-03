@@ -241,11 +241,19 @@ struct ContentView: View
                 Spacer()
 
 
-                Text(
-                    "\(totalRemainingDistance, specifier: "%.0f") m"
-                )
-                .font(.subheadline)
-                .fontWeight(.semibold)
+                VStack(alignment: .trailing, spacing: 3)
+                {
+                    Text(
+                        "\(totalRemainingDistance, specifier: "%.0f") m"
+                    )
+                    .font(.headline)
+                    .fontWeight(.bold)
+
+
+                    Text("REMAINING")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
             }
 
 
@@ -257,7 +265,7 @@ struct ContentView: View
                 Text("DEMO CONTROLS")
                     .font(.caption2)
                     .fontWeight(.semibold)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.secondary.opacity(0.8))
 
 
                 HStack(spacing: 10)
@@ -271,7 +279,8 @@ struct ContentView: View
                                 route: selectedRoute.route
                             )
                         }
-                        .buttonStyle(.bordered)
+                        .buttonStyle(.borderedProminent)
+                        .tint(.gray.opacity(0.35))
                     }
 
 
@@ -283,7 +292,8 @@ struct ContentView: View
                     {
                         hazardActive.toggle()
                     }
-                    .buttonStyle(.bordered)
+                    .buttonStyle(.borderedProminent)
+                    .tint(.gray.opacity(0.35))
 
 
                     // simulate user movement
@@ -296,8 +306,9 @@ struct ContentView: View
                 
                 
                 Text("PROTOTYPE · SIMULATED EMERGENCY DATA")
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    .font(.system(size: 9, weight: .medium))
+                    .foregroundStyle(.secondary.opacity(0.65))
+                    .padding(.top, 4)
                 
                 
             }
