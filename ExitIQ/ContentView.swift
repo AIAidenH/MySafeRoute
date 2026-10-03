@@ -265,36 +265,48 @@ struct ContentView: View
             Spacer()
 
 
-            if let selectedRoute,
-               selectedRoute.route.count > 1
+            VStack(spacing: 10)
             {
-                Button("Simulate Movement")
+                Text("DEMO CONTROLS")
+                    .font(.caption2)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.secondary)
+
+
+                HStack(spacing: 10)
                 {
-                    moveToNextNode(
-                        route: selectedRoute.route
+                    if let selectedRoute,
+                       selectedRoute.route.count > 1
+                    {
+                        Button("Move")
+                        {
+                            moveToNextNode(
+                                route: selectedRoute.route
+                            )
+                        }
+                        .buttonStyle(.bordered)
+                    }
+
+
+                    Button(
+                        hazardActive
+                            ? "Clear Hazard"
+                            : "Hazard"
                     )
+                    {
+                        hazardActive.toggle()
+                    }
+                    .buttonStyle(.bordered)
+
+
+                    // building map
+                    Button("Map")
+                    {
+                        showMap = true
+                    }
+                    .buttonStyle(.bordered)
                 }
-                .buttonStyle(.bordered)
             }
-            
-            
-            Button(
-                hazardActive
-                    ? "Clear Hazard"
-                    : "Simulate Hazard"
-            )
-            {
-                hazardActive.toggle()
-            }
-            .buttonStyle(.bordered)
-            
-            
-            // building map
-            Button("Show Map")
-            {
-                showMap = true
-            }
-            .buttonStyle(.bordered)
             .padding(.top, 10)
         }
         .frame(maxWidth: .infinity)
