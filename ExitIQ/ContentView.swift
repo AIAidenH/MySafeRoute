@@ -319,16 +319,41 @@ struct ContentView: View
         {
             if let selectedRoute
             {
-                BuildingMapView(
-                    building: activeBuilding,
-                    currentNodeID: currentNodeID,
-                    route: selectedRoute.route
-                )
-                .frame(
-                    maxWidth: .infinity,
-                    maxHeight: .infinity
-                )
-                .padding()
+                VStack(spacing: 0)
+                {
+                    VStack(spacing: 4)
+                    {
+                        Text("EVACUATION MAP")
+                            .font(.headline)
+
+
+                        Text(
+                            hazardActive
+                                ? "Route updated due to detected hazard"
+                                : "Current safest route"
+                        )
+                        .font(.caption)
+                        .foregroundStyle(
+                            hazardActive
+                                ? .red
+                                : .secondary
+                        )
+                    }
+                    .padding(.top)
+                    .padding(.bottom, 8)
+
+
+                    BuildingMapView(
+                        building: activeBuilding,
+                        currentNodeID: currentNodeID,
+                        route: selectedRoute.route
+                    )
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: .infinity
+                    )
+                    .padding()
+                }
             }
         }
     }
