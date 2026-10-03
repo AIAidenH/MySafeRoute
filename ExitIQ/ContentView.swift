@@ -162,11 +162,11 @@ struct ContentView: View
                     : "SAFE ROUTE ACTIVE"
             )
             .font(.caption)
-            .fontWeight(.semibold)
+            .fontWeight(.bold)
             .foregroundStyle(
                 hazardActive
                     ? .red
-                    : .secondary
+                    : .green.opacity(0.65)
             )
             .padding(.bottom, 12)
 
@@ -191,26 +191,32 @@ struct ContentView: View
             if selectedRoute?.route.count == 1
             {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 130, weight: .black))
+                    .font(.system(size: 180, weight: .black))
+                    .foregroundStyle(.green)
 
 
                 Text("0 m")
-                    .font(.system(size: 34, weight: .bold))
+                    .font(.system(size: 60, weight: .black, design: .rounded))
+                    .tracking(-2)
+                    .foregroundStyle(.green)
                     .padding(.top, 25)
             }
             else
             {
                 Image(systemName: "arrow.up")
-                    .font(.system(size: 150, weight: .black))
+                    .font(.system(size: 240, weight: .black))
                     .rotationEffect(
                         .degrees(direction)
                     )
+                    .foregroundStyle(.green)
 
 
                 Text(
                     "\(distanceToNextDestination, specifier: "%.0f") m"
                 )
-                .font(.system(size: 34, weight: .bold))
+                .font(.system(size: 60, weight: .black, design: .rounded))
+                .tracking(-2)
+                .foregroundStyle(.green)
                 .padding(.top, 25)
             }
 
@@ -297,8 +303,13 @@ struct ContentView: View
             }
             .padding(.top, 10)
         }
-        .frame(maxWidth: .infinity)
+        .frame(
+            maxWidth: .infinity,
+            maxHeight: .infinity
+        )
         .padding()
+        .background(.black)
+        .preferredColorScheme(.dark)
         
         
         .sheet(
@@ -324,7 +335,7 @@ struct ContentView: View
                         .foregroundStyle(
                             hazardActive
                                 ? .red
-                                : .secondary
+                                : .green.opacity(0.65)
                         )
                     }
                     .padding(.top)
