@@ -533,7 +533,8 @@ struct ContentView: View
                         currentNodeID: currentNodeID,
                         route: selectedRoute.route,
                         routeDirection: routeDirection,
-                        relativeDirection: direction
+                        relativeDirection: direction,
+                        predictiveActive: predictiveActive
                     )
                     .frame(
                         maxWidth: .infinity,

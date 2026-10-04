@@ -8,6 +8,7 @@ struct BuildingMapView: View
     let route: [String]
     let routeDirection: Double
     let relativeDirection: Double
+    let predictiveActive: Bool
 
 
     var body: some View
@@ -58,6 +59,7 @@ struct BuildingMapView: View
                         )
                     }
                 }
+                
                 
                 
                 // selected route
@@ -145,6 +147,35 @@ struct BuildingMapView: View
                             )
                         )
                     }
+                }
+                
+                
+                if predictiveActive,
+                   let exitBNode = node(
+                       with: "exitB"
+                   )
+                {
+                    VStack(spacing: 2)
+                    {
+                        Image(systemName: "clock.badge.exclamationmark")
+                            .font(.system(size: 24, weight: .bold))
+                            .foregroundStyle(.orange)
+
+
+                        Text("PREDICTED")
+                            .font(.system(size: 8, weight: .bold))
+                            .foregroundStyle(.orange)
+                    }
+                    .position(
+                        x: position(
+                            for: exitBNode,
+                            in: geometry.size
+                        ).x,
+                        y: position(
+                            for: exitBNode,
+                            in: geometry.size
+                        ).y - 56
+                    )
                 }
 
 
@@ -416,7 +447,8 @@ struct BuildingMapView: View
             "exitA"
         ],
         routeDirection: 90,
-        relativeDirection: 0
+        relativeDirection: 0,
+        predictiveActive: false
     )
     .padding()
 }
