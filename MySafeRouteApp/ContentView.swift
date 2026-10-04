@@ -4,7 +4,9 @@ import SwiftUI
 struct ContentView: View
 {
     @State private var currentNodeID = "classroom201"
+    @State private var userSpeed: Double? = 1.2
     @State private var hazardActive = false
+    @State private var predictiveActive = false
     @State private var criticalActive = false
     @State private var showMap = false
     @StateObject private var headingManager =
@@ -60,7 +62,17 @@ struct ContentView: View
 
     var selectedRoute: RouteOption?
     {
-        RouteEngine.findEmergencyDestination(
+        if predictiveActive
+        {
+            return DynamicRoutingEngine.recalculateRoute(
+                from: currentNodeID,
+                building: activeBuilding,
+                userSpeed: userSpeed,
+                hazardArrivalTimes: hazardArrivalTimes
+            )
+        }
+
+        return RouteEngine.findEmergencyDestination(
             from: currentNodeID,
             building: activeBuilding
         )
@@ -98,6 +110,21 @@ struct ContentView: View
         {
             $0.id == nextNodeID
         })?.name ?? nextNodeID
+    }
+    
+    
+    
+    
+    var hazardArrivalTimes: [String: Double]
+    {
+        if predictiveActive
+        {
+            return [
+                "exitB": 12.0
+            ]
+        }
+
+        return [:]
     }
 
 
@@ -198,7 +225,9 @@ struct ContentView: View
                     ? "⚠ CRITICAL · REFUGE ROUTE ACTIVE"
                     : hazardActive
                         ? "⚠ HAZARD DETECTED · ROUTE UPDATED"
-                        : "SAFE ROUTE ACTIVE"
+                        : predictiveActive
+                            ? "⚠ PREDICTED HAZARD · ROUTE UPDATED"
+                            : "SAFE ROUTE ACTIVE"
             )
             .font(.caption)
             .foregroundStyle(
@@ -334,66 +363,86 @@ struct ContentView: View
                     .foregroundStyle(.secondary.opacity(0.8))
 
 
-                HStack(spacing: 10)
+                VStack(spacing: 10)
                 {
-                    if let selectedRoute,
-                       selectedRoute.route.count > 1
+                    HStack(spacing: 10)
                     {
-                        Button("Move")
+                        if let selectedRoute,
+                           selectedRoute.route.count > 1
                         {
-                            moveToNextNode(
-                                route: selectedRoute.route
+                            Button("Move")
+                            {
+                                moveToNextNode(
+                                    route: selectedRoute.route
+                                )
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.gray.opacity(0.35))
+
+
+                            Button("Hazard")
+                            {
+                                if hazardActive
+                                {
+                                    hazardActive = false
+                                }
+                                else
+                                {
+                                    predictiveActive = false
+                                    criticalActive = false
+                                    hazardActive = true
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(
+                                hazardActive
+                                    ? .gray
+                                    : .gray.opacity(0.35)
+                            )
+
+
+                            Button("Predict")
+                            {
+                                if predictiveActive
+                                {
+                                    predictiveActive = false
+                                }
+                                else
+                                {
+                                    hazardActive = false
+                                    criticalActive = false
+                                    predictiveActive = true
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(
+                                predictiveActive
+                                    ? .gray
+                                    : .gray.opacity(0.35)
+                            )
+
+
+                            Button("Critical")
+                            {
+                                if criticalActive
+                                {
+                                    criticalActive = false
+                                }
+                                else
+                                {
+                                    hazardActive = false
+                                    predictiveActive = false
+                                    criticalActive = true
+                                }
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(
+                                criticalActive
+                                    ? .gray
+                                    : .gray.opacity(0.35)
                             )
                         }
-                        .buttonStyle(.borderedProminent)
-                        .tint(.gray.opacity(0.35))
-
-
-                        Button("Hazard")
-                        {
-                            if hazardActive
-                            {
-                                hazardActive = false
-                            }
-                            else
-                            {
-                                criticalActive = false
-                                hazardActive = true
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(
-                            hazardActive
-                                ? .gray
-                                : .gray.opacity(0.35)
-                        )
-                        
-                        
-                        
-                        Button("Critical")
-                        {
-                            if criticalActive
-                            {
-                                criticalActive = false
-                            }
-                            else
-                            {
-                                hazardActive = false
-                                criticalActive = true
-                            }
-                        }
-                        .buttonStyle(.borderedProminent)
-                        .tint(
-                            criticalActive
-                                ? .gray
-                                : .gray.opacity(0.35)
-                        )
                     }
-                    
-                    
-                    
-                    
-                    
 
 
                     Button("Map")
@@ -442,7 +491,9 @@ struct ContentView: View
                                     ? "Refuge route active"
                                     : hazardActive
                                         ? "Route updated due to detected hazard"
-                                        : "Current safest route"
+                                        : predictiveActive
+                                            ? "Route updated due to predicted hazard"
+                                            : "Current safest route"
                             )
                             .font(.caption)
                             .foregroundStyle(
