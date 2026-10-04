@@ -1,7 +1,7 @@
 import Foundation
 
 
-// sample sensor data used for the ExitIQ simulation
+// sample sensor data used for the MySafeRouteApp simulation
 let sensorA = SensorNode(
     id: "A",
     name: "East Hallway A",

@@ -1,7 +1,7 @@
 import Foundation
 
 
-// holds the simulated building layout used by ExitIQ
+// holds the simulated building layout used by MySafeRouteApp
 struct BuildingMap {
     var nodes: [BuildingNode]
     var edges: [BuildingEdge]

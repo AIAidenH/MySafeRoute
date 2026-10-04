@@ -2,7 +2,7 @@ import SwiftUI
 
 
 @main
-struct ExitIQApp: App
+struct MySafeRouteApp: App
 {
     var body: some Scene
     {
