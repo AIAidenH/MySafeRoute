@@ -90,7 +90,7 @@
 			name = MySafeRoute;
 			packageProductDependencies = (
 			);
-			productName = ExitIQ;
+			productName = MySafeRoute;
 			productReference = 8BA558AF3049552100D6E113 /* MySafeRoute.app */;
 			productType = "com.apple.product-type.application";
 		};
